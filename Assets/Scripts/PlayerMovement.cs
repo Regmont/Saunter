@@ -9,7 +9,7 @@ public class PlayerMovement : MonoBehaviour
 
     private Rigidbody rb;
     private Vector3 moveDirection;
-    private GameManager gameManager;
+    private bool isPaused = false;
 
     public void Awake()
     {
@@ -17,25 +17,47 @@ public class PlayerMovement : MonoBehaviour
         rb.constraints = RigidbodyConstraints.FreezeRotation;
     }
 
-    public void Start()
-    {
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-    }
-
     public void Update()
     {
-        if (!gameManager.GamePause)
+        if (GameManager.Instance.GamePause)
         {
-            GetInput();
+            if (!isPaused)
+            {
+                PausePhysics();
+            }
+
+            return;
         }
+        else
+        {
+            if (isPaused)
+            {
+                ResumePhysics();
+            }
+        }
+
+        GetInput();
     }
 
     public void FixedUpdate()
     {
-        if (!gameManager.GamePause)
+        if (!GameManager.Instance.GamePause)
         {
             Move();
         }
+    }
+
+    private void PausePhysics()
+    {
+        isPaused = true;
+        rb.isKinematic = true;
+        rb.linearVelocity = Vector3.zero;
+    }
+
+    private void ResumePhysics()
+    {
+        isPaused = false;
+        rb.isKinematic = false;
     }
 
     private void GetInput()

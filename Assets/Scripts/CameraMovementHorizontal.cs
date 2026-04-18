@@ -6,16 +6,10 @@ public class CameraMovementHorizontal : MonoBehaviour
     [SerializeField]
     private float mouseSensitivityHorizontal = 30f;
     private float xRotation = 0f;
-    private GameManager gameManager;
-
-    public void Start()
-    {
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-    }
 
     public void Update()
     {
-        if (!gameManager.GamePause)
+        if (!GameManager.Instance.GamePause)
         {
             Rotate();
         }
