@@ -31,6 +31,8 @@ public class GameManager : MonoBehaviour
     public void Start()
     {
         debugText = GameObject.Find("Debug Text").GetComponent<TextMeshProUGUI>();
+        AudioClip music = Resources.Load<AudioClip>("Music/Terraria");
+        AudioManager.Instance.PlayMusic(music);
     }
 
     public void Update()

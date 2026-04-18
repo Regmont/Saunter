@@ -51,7 +51,6 @@ public class PlayerMovement : MonoBehaviour
     {
         isPaused = true;
         rb.isKinematic = true;
-        rb.linearVelocity = Vector3.zero;
     }
 
     private void ResumePhysics()
