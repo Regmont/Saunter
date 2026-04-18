@@ -9,10 +9,16 @@ public class CameraMovementHorizontal : MonoBehaviour
 
     public void Update()
     {
-        if (!GameManager.Instance.GamePause)
+        if (!(GameManager.Instance.GamePause || GameManager.Instance.IsSitting))
         {
             Rotate();
         }
+    }
+
+    public void ResetXRotation()
+    {
+        xRotation = 0f;
+        transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
     }
 
     private void Rotate()

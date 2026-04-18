@@ -1,3 +1,5 @@
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -19,7 +21,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void Update()
     {
-        if (GameManager.Instance.GamePause)
+        if (GameManager.Instance.GamePause || GameManager.Instance.IsSitting)
         {
             if (!isPaused)
             {
@@ -41,7 +43,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void FixedUpdate()
     {
-        if (!GameManager.Instance.GamePause)
+        if (!(GameManager.Instance.GamePause || GameManager.Instance.IsSitting))
         {
             Move();
         }
@@ -90,5 +92,23 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector3 targetPosition = rb.position + moveDirection * speed * Time.fixedDeltaTime;
         rb.MovePosition(targetPosition);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Bench"))
+        {
+            GameManager.Instance.SetSitAvailable(true);
+            GameManager.Instance.SetCurrentBench(other.GameObject());
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Bench"))
+        {
+            GameManager.Instance.SetSitAvailable(false);
+            GameManager.Instance.SetCurrentBench(null);
+        }
     }
 }

@@ -9,10 +9,16 @@ public class CameraMovementVertical : MonoBehaviour
 
     public void Update()
     {
-        if (!GameManager.Instance.GamePause)
+        if (!(GameManager.Instance.GamePause || GameManager.Instance.IsSitting))
         {
             Rotate();
         }
+    }
+
+    public void ResetYRotation()
+    {
+        yRotation = 0f;
+        transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
     }
 
     private void Rotate()
