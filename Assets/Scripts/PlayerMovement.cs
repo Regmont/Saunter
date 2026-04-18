@@ -9,6 +9,7 @@ public class PlayerMovement : MonoBehaviour
 
     private Rigidbody rb;
     private Vector3 moveDirection;
+    private GameManager gameManager;
 
     public void Awake()
     {
@@ -16,14 +17,25 @@ public class PlayerMovement : MonoBehaviour
         rb.constraints = RigidbodyConstraints.FreezeRotation;
     }
 
+    public void Start()
+    {
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+    }
+
     public void Update()
     {
-        GetInput();
+        if (!gameManager.GamePause)
+        {
+            GetInput();
+        }
     }
 
     public void FixedUpdate()
     {
-        Move();
+        if (!gameManager.GamePause)
+        {
+            Move();
+        }
     }
 
     private void GetInput()

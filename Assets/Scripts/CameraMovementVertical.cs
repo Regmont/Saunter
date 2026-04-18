@@ -6,15 +6,19 @@ public class CameraMovementVertical : MonoBehaviour
     [SerializeField]
     private float mouseSensitivityVertical = 30f;
     private float yRotation = 0f;
+    private GameManager gameManager;
 
     public void Start()
     {
-
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
 
     public void Update()
     {
-        Rotate();
+        if (!gameManager.GamePause)
+        {
+            Rotate();
+        }
     }
 
     private void Rotate()
