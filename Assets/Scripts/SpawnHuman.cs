@@ -9,6 +9,9 @@ public class SpawnHuman : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            AudioClip audio = Resources.Load<AudioClip>("SFX/granade");
+            AudioManager.Instance.PlaySFX(audio);
+
             objectToSpawn.SetActive(true);
             Destroy(gameObject);
         }

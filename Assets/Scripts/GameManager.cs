@@ -12,6 +12,9 @@ public class GameManager : MonoBehaviour
     public bool GamePause => gamePaused;
     public bool IsSitting => isSitting;
     public bool GameNotStarted => !gameStarted;
+    public float MouseSensitivity => mouseSensitivity;
+
+    private float mouseSensitivity = 30;
 
     private bool gamePaused;
     private bool canSit;
@@ -25,6 +28,7 @@ public class GameManager : MonoBehaviour
     private GameObject gridPause;
     private GameObject gridMainMenu;
     private GameObject settingsContainer;
+    private GameObject audioManager;
 
     private bool isAnimating = false;
 
@@ -53,6 +57,7 @@ public class GameManager : MonoBehaviour
         gridPause = Resources.FindObjectsOfTypeAll<GameObject>().FirstOrDefault(go => go.name == "GridPause" && go.scene.isLoaded);
         gridMainMenu = GameObject.Find("GridMainMenu");
         settingsContainer = Resources.FindObjectsOfTypeAll<GameObject>().FirstOrDefault(go => go.name == "SettingsContainer" && go.scene.isLoaded);
+        audioManager = GameObject.Find("AudioManager");
 
         player = GameObject.FindWithTag("Player");
 
@@ -143,6 +148,27 @@ public class GameManager : MonoBehaviour
         }
             
         settingsContainer.SetActive(false);
+    }
+
+    public void MouseSensitivityChange(float value)
+    {
+        mouseSensitivity = value;
+    }
+
+    public void MisicVolumeChange(float value)
+    {
+        AudioSource[] sources = audioManager.GetComponents<AudioSource>();
+        AudioSource musicSource = sources[0];
+
+        musicSource.volume = value;
+    }
+
+    public void SfxVolumeChange(float value)
+    {
+        AudioSource[] sources = audioManager.GetComponents<AudioSource>();
+        AudioSource musicSource = sources[1];
+
+        musicSource.volume = value;
     }
 
     private void SetPauseMenuActive(bool active)

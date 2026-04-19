@@ -3,8 +3,6 @@ using UnityEngine.InputSystem;
 
 public class CameraMovementVertical : MonoBehaviour
 {
-    [SerializeField]
-    private float mouseSensitivityVertical = 30f;
     private float yRotation = 0f;
 
     public void Update()
@@ -25,7 +23,7 @@ public class CameraMovementVertical : MonoBehaviour
     {
         Vector2 mouseDelta = Mouse.current.delta.ReadValue();
 
-        float mouseY = mouseDelta.y * mouseSensitivityVertical * Time.deltaTime;
+        float mouseY = mouseDelta.y * GameManager.Instance.MouseSensitivity * Time.deltaTime;
 
         yRotation -= mouseY;
 

@@ -3,8 +3,6 @@ using UnityEngine.InputSystem;
 
 public class CameraMovementHorizontal : MonoBehaviour
 {
-    [SerializeField]
-    private float mouseSensitivityHorizontal = 30f;
     private float xRotation = 0f;
 
     public void Update()
@@ -25,7 +23,7 @@ public class CameraMovementHorizontal : MonoBehaviour
     {
         Vector2 mouseDelta = Mouse.current.delta.ReadValue();
 
-        float mouseX = mouseDelta.x * mouseSensitivityHorizontal * Time.deltaTime;
+        float mouseX = mouseDelta.x * GameManager.Instance.MouseSensitivity * Time.deltaTime;
 
         xRotation += mouseX;
 
