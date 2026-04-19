@@ -113,7 +113,7 @@ public class GameManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
     }
 
-    public void ExitButtonClick()
+    public void ExitButtonClicked()
     {
         #if UNITY_EDITOR
                 UnityEditor.EditorApplication.isPlaying = false;
@@ -122,7 +122,7 @@ public class GameManager : MonoBehaviour
         #endif
     }
 
-    public void SettingsButtonClick()
+    public void SettingsButtonClicked()
     {
         settingsContainer.SetActive(true);
 
@@ -136,7 +136,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void BackButtonClick()
+    public void BackButtonClicked()
     {
         if (gameStarted)
         {
