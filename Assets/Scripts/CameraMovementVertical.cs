@@ -9,7 +9,7 @@ public class CameraMovementVertical : MonoBehaviour
 
     public void Update()
     {
-        if (!(GameManager.Instance.GamePause || GameManager.Instance.IsSitting))
+        if (!(GameManager.Instance.GamePause || GameManager.Instance.IsSitting || GameManager.Instance.GameNotStarted))
         {
             Rotate();
         }

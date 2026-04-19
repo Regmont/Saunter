@@ -1,7 +1,9 @@
 using System.Collections;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -9,16 +11,20 @@ public class GameManager : MonoBehaviour
 
     public bool GamePause => gamePaused;
     public bool IsSitting => isSitting;
+    public bool GameNotStarted => !gameStarted;
 
     private bool gamePaused;
     private bool canSit;
     private bool isSitting;
+    private bool gameStarted;
 
-    private TextMeshProUGUI debugText;
     private TextMeshProUGUI interactionText;
 
     private GameObject currentBench;
     private GameObject player;
+    private GameObject gridPause;
+    private GameObject gridMainMenu;
+    private GameObject settingsContainer;
 
     private bool isAnimating = false;
 
@@ -35,16 +41,19 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        Cursor.lockState = CursorLockMode.Locked;
         gamePaused = false;
         canSit = false;
         isSitting = false;
+        gameStarted = false;
     }
 
     public void Start()
     {
-        debugText = GameObject.Find("Debug Text").GetComponent<TextMeshProUGUI>();
         interactionText = GameObject.Find("Interaction Text").GetComponent<TextMeshProUGUI>();
+        gridPause = Resources.FindObjectsOfTypeAll<GameObject>().FirstOrDefault(go => go.name == "GridPause" && go.scene.isLoaded);
+        gridMainMenu = GameObject.Find("GridMainMenu");
+        settingsContainer = Resources.FindObjectsOfTypeAll<GameObject>().FirstOrDefault(go => go.name == "SettingsContainer" && go.scene.isLoaded);
+
         player = GameObject.FindWithTag("Player");
 
         AudioClip music = Resources.Load<AudioClip>("Music/Terraria");
@@ -53,8 +62,11 @@ public class GameManager : MonoBehaviour
 
     public void Update()
     {
-        Input();
-        DrawUI();
+        if (gameStarted)
+        {
+            Input();
+            SetPauseMenuActive(gamePaused);
+        }
     }
 
     public void SetSitAvailable(bool available)
@@ -67,6 +79,95 @@ public class GameManager : MonoBehaviour
     public void SetCurrentBench(GameObject currentBench)
     {
         this.currentBench = currentBench;
+    }
+
+    public void BackToGameButtonClicked()
+    {
+        SetPauseMenuActive(false);
+    }
+
+    public void MainMenuButtonClicked()
+    {
+        GameObject[] allObjects = FindObjectsByType<GameObject>(FindObjectsInactive.Include);
+
+        foreach (GameObject obj in allObjects)
+        {
+            if (obj.scene.buildIndex == -1)
+            {
+                Destroy(obj);
+            }
+        }
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void StartGameButtonClicked()
+    {
+        gameStarted = true;
+        gridMainMenu.SetActive(false);
+        Cursor.lockState = CursorLockMode.Locked;
+    }
+
+    public void ExitButtonClick()
+    {
+        #if UNITY_EDITOR
+                UnityEditor.EditorApplication.isPlaying = false;
+        #else
+                Application.Quit();
+        #endif
+    }
+
+    public void SettingsButtonClick()
+    {
+        settingsContainer.SetActive(true);
+
+        if (gameStarted)
+        {
+            gridPause.SetActive(false);
+        }
+        else
+        {
+            gridMainMenu.SetActive(false);
+        }
+    }
+
+    public void BackButtonClick()
+    {
+        if (gameStarted)
+        {
+            gridPause.SetActive(true);
+        }
+        else
+        {
+            gridMainMenu.SetActive(true);
+        }
+            
+        settingsContainer.SetActive(false);
+    }
+
+    private void SetPauseMenuActive(bool active)
+    {
+        if (gridPause == null)
+        {
+            return;
+        }
+
+        if (!active)
+        {
+            StartCoroutine(DeactivateGrid());
+            gamePaused = false;
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+        else
+        {
+            gridPause.SetActive(true);
+        }
+    }
+
+    private IEnumerator DeactivateGrid()
+    {
+        yield return null;
+        gridPause.SetActive(false);
     }
 
     private void Input()
@@ -102,20 +203,6 @@ public class GameManager : MonoBehaviour
                     }
                 }
             }
-        }
-    }
-
-    private void DrawUI()
-    {
-        if (debugText == null) return;
-
-        if (!gamePaused)
-        {
-            debugText.text = string.Empty;
-        }
-        else
-        {
-            debugText.text = "Pause";
         }
     }
 

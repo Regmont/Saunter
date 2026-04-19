@@ -21,7 +21,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void Update()
     {
-        if (GameManager.Instance.GamePause || GameManager.Instance.IsSitting)
+        if (GameManager.Instance.GamePause || GameManager.Instance.IsSitting || GameManager.Instance.GameNotStarted)
         {
             if (!isPaused)
             {
@@ -43,7 +43,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void FixedUpdate()
     {
-        if (!(GameManager.Instance.GamePause || GameManager.Instance.IsSitting))
+        if (!(GameManager.Instance.GamePause || GameManager.Instance.IsSitting || GameManager.Instance.GameNotStarted))
         {
             Move();
         }
