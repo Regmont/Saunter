@@ -15,7 +15,8 @@ public class GameManager : MonoBehaviour
     public float MouseSensitivity => mouseSensitivity;
 
     private float mouseSensitivity = 10f;
-    private float initialVolume = 0.3f;
+    private float initialSfxVolume = 0.3f;
+    private float initialMusicVolume = 0.5f;
 
     private bool gamePaused;
     private bool canSit;
@@ -29,7 +30,6 @@ public class GameManager : MonoBehaviour
     private GameObject gridPause;
     private GameObject gridMainMenu;
     private GameObject settingsContainer;
-    //private GameObject audioManager;
 
     private bool isAnimating = false;
 
@@ -58,15 +58,13 @@ public class GameManager : MonoBehaviour
         gridPause = Resources.FindObjectsOfTypeAll<GameObject>().FirstOrDefault(go => go.name == "GridPause" && go.scene.isLoaded);
         gridMainMenu = GameObject.Find("GridMainMenu");
         settingsContainer = Resources.FindObjectsOfTypeAll<GameObject>().FirstOrDefault(go => go.name == "SettingsContainer" && go.scene.isLoaded);
-        //audioManager = GameObject.Find("AudioManager");
 
         player = GameObject.FindWithTag("Player");
 
-        SfxVolumeChange(initialVolume);
-        MisicVolumeChange(initialVolume);
+        SfxVolumeChange(initialSfxVolume);
+        MisicVolumeChange(initialMusicVolume);
 
         AudioClip music = Resources.Load<AudioClip>("Music/Terraria");
-        //AudioManager.Instance.PlayMusic(music);
     }
 
     public void Update()

@@ -1,10 +1,13 @@
 using UnityEngine;
+using System.Collections;
 
 public class SelfDestroyWithAnimation : MonoBehaviour
 {
+    [SerializeField]
+    private int animationCycles = 1;
+
     private Animator animator;
     private float animationLength;
-    private float elapsedTime = 0f;
 
     private void Start()
     {
@@ -12,6 +15,7 @@ public class SelfDestroyWithAnimation : MonoBehaviour
         if (animator != null)
         {
             animationLength = animator.GetCurrentAnimatorStateInfo(0).length;
+            StartCoroutine(PlayAndDestroy());
         }
         else
         {
@@ -19,30 +23,37 @@ public class SelfDestroyWithAnimation : MonoBehaviour
         }
     }
 
-    private void Update()
+    private IEnumerator PlayAndDestroy()
     {
-        if (animator == null)
+        for (int i = 0; i < animationCycles; i++)
         {
-            return;
-        }
-
-        if (GameManager.Instance.GamePause)
-        {
-            animator.speed = 0;
-        }
-        else
-        {
-            if (animator.speed == 0)
+            float elapsed = 0f;
+            while (elapsed < animationLength)
             {
-                animator.speed = 1;
+                if (!GameManager.Instance.GamePause)
+                {
+                    elapsed += Time.deltaTime;
+                    if (animator != null && animator.speed == 0)
+                    {
+                        animator.speed = 1;
+                    }
+                }
+                else
+                {
+                    if (animator != null && animator.speed != 0)
+                    {
+                        animator.speed = 0;
+                    }
+                }
+                yield return null;
             }
 
-            elapsedTime += Time.deltaTime;
-
-            if (elapsedTime >= animationLength)
+            if (i < animationCycles - 1 && animator != null)
             {
-                Destroy(gameObject);
+                animator.Play(animator.GetCurrentAnimatorStateInfo(0).fullPathHash, 0, 0f);
             }
         }
+
+        Destroy(gameObject);
     }
 }
