@@ -14,7 +14,8 @@ public class GameManager : MonoBehaviour
     public bool GameNotStarted => !gameStarted;
     public float MouseSensitivity => mouseSensitivity;
 
-    private float mouseSensitivity = 30;
+    private float mouseSensitivity = 10f;
+    private float initialVolume = 0.3f;
 
     private bool gamePaused;
     private bool canSit;
@@ -28,7 +29,7 @@ public class GameManager : MonoBehaviour
     private GameObject gridPause;
     private GameObject gridMainMenu;
     private GameObject settingsContainer;
-    private GameObject audioManager;
+    //private GameObject audioManager;
 
     private bool isAnimating = false;
 
@@ -57,12 +58,15 @@ public class GameManager : MonoBehaviour
         gridPause = Resources.FindObjectsOfTypeAll<GameObject>().FirstOrDefault(go => go.name == "GridPause" && go.scene.isLoaded);
         gridMainMenu = GameObject.Find("GridMainMenu");
         settingsContainer = Resources.FindObjectsOfTypeAll<GameObject>().FirstOrDefault(go => go.name == "SettingsContainer" && go.scene.isLoaded);
-        audioManager = GameObject.Find("AudioManager");
+        //audioManager = GameObject.Find("AudioManager");
 
         player = GameObject.FindWithTag("Player");
 
+        SfxVolumeChange(initialVolume);
+        MisicVolumeChange(initialVolume);
+
         AudioClip music = Resources.Load<AudioClip>("Music/Terraria");
-        AudioManager.Instance.PlayMusic(music);
+        //AudioManager.Instance.PlayMusic(music);
     }
 
     public void Update()
@@ -157,18 +161,30 @@ public class GameManager : MonoBehaviour
 
     public void MisicVolumeChange(float value)
     {
-        AudioSource[] sources = audioManager.GetComponents<AudioSource>();
-        AudioSource musicSource = sources[0];
+        GameObject[] musicObjects = GameObject.FindGameObjectsWithTag("Music");
 
-        musicSource.volume = value;
+        foreach (GameObject obj in musicObjects)
+        {
+            AudioSource source = obj.GetComponent<AudioSource>();
+            if (source != null)
+            {
+                source.volume = value;
+            }
+        }
     }
 
     public void SfxVolumeChange(float value)
     {
-        AudioSource[] sources = audioManager.GetComponents<AudioSource>();
-        AudioSource musicSource = sources[1];
+        GameObject[] sfxObjects = GameObject.FindGameObjectsWithTag("SFX");
 
-        musicSource.volume = value;
+        foreach (GameObject obj in sfxObjects)
+        {
+            AudioSource source = obj.GetComponent<AudioSource>();
+            if (source != null)
+            {
+                source.volume = value;
+            }
+        }
     }
 
     private void SetPauseMenuActive(bool active)
