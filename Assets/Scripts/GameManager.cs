@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
     private bool canSit;
     private bool isSitting;
     private bool gameStarted;
+    private bool settingsActive;
 
     private TextMeshProUGUI interactionText;
 
@@ -50,6 +51,7 @@ public class GameManager : MonoBehaviour
         canSit = false;
         isSitting = false;
         gameStarted = false;
+        settingsActive = false;
     }
 
     public void Start()
@@ -72,7 +74,6 @@ public class GameManager : MonoBehaviour
         if (gameStarted)
         {
             Input();
-            SetPauseMenuActive(gamePaused);
         }
     }
 
@@ -126,15 +127,23 @@ public class GameManager : MonoBehaviour
 
     public void SettingsButtonClicked()
     {
+        StartCoroutine(DisableAfterFrame(gridPause));
         settingsContainer.SetActive(true);
+        settingsActive = true;
+
+        if (!gameStarted)
+        {
+            gridMainMenu.SetActive(false);
+        }
+    }
+
+    IEnumerator DisableAfterFrame(GameObject obj)
+    {
+        yield return null;
 
         if (gameStarted)
         {
-            gridPause.SetActive(false);
-        }
-        else
-        {
-            gridMainMenu.SetActive(false);
+            obj.SetActive(false);
         }
     }
 
@@ -150,6 +159,7 @@ public class GameManager : MonoBehaviour
         }
             
         settingsContainer.SetActive(false);
+        settingsActive = false;
     }
 
     public void MouseSensitivityChange(float value)
@@ -214,15 +224,19 @@ public class GameManager : MonoBehaviour
     {
         if (Keyboard.current.escapeKey.wasPressedThisFrame)
         {
-            gamePaused = !gamePaused;
+            if (!settingsActive)
+            {
+                gamePaused = !gamePaused;
+                SetPauseMenuActive(gamePaused);
 
-            if (gamePaused)
-            {
-                Cursor.lockState = CursorLockMode.None;
-            }
-            else
-            {
-                Cursor.lockState = CursorLockMode.Locked;
+                if (gamePaused)
+                {
+                    Cursor.lockState = CursorLockMode.None;
+                }
+                else
+                {
+                    Cursor.lockState = CursorLockMode.Locked;
+                }
             }
         }
         else
